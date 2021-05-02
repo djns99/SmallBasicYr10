@@ -1,0 +1,141 @@
+GraphicsWindow.Hide()
+GraphicsWindow.BackgroundColor = "LightBlue"
+GraphicsWindow.CanResize = "False"
+GraphicsWindow.Width = 620
+GraphicsWindow.Height = 450
+GraphicsWindow.Top = ( Desktop.Height - 450 ) / 2
+GraphicsWindow.Left = ( Desktop.Width - 620 ) / 2
+GraphicsWindow.Title = "Hit the Target"
+GraphicsWindow.Show()
+
+Turtle.Hide()
+rectangleX = 40
+rectangleY = 20
+turtlex = 315
+turtley = 300
+width = 550
+height = 390
+ScoreboxX = 400
+Enterkey = "Return"
+
+target = 10
+life = 3
+score = 0
+
+GraphicsWindow.FontSize = 30
+GraphicsWindow.DrawText(100, 200, "Press ENTER to start the game!")
+GraphicsWindow.KeyDown = Onpress
+
+Sub Onpress
+  enter = enter + 1
+  If GraphicsWindow.LastKey = Enterkey And enter = 1 Then
+    GraphicsWindow.Clear()
+    GraphicsWindow.FontSize = 12
+    GUI()
+    MovingShape()
+    ScoreShow()
+    Controls.ButtonClicked = hitClick
+  EndIf  
+EndSub
+
+Sub GUI
+  image = "P:/Frog.jpg"  
+  GraphicsWindow.DrawRectangle(rectangleX, rectangleX, width, height)
+  target = Shapes.AddImage(image)
+  Shapes.Zoom(target, 0.3, 0.3) 
+  GraphicsWindow.BrushColor = "Black"
+  Shapes.Move(target, 100, 50) 
+  Turtle.Show()
+  Turtle.X = turtlex
+  Turtle.y = turtley  
+  Turtle.Angle = 0
+  GraphicsWindow.DrawText(rectangleX + 5, height - 10, "Enter Angle:")
+  angletxt = Controls.AddTextBox(turtlex - 190, Turtley + 70)
+  Controls.SetSize(angletxt, 40, 30)  
+  GraphicsWindow.DrawText(rectangleX + 130, height - 10, "Enter Distance:")
+  distancetxt = Controls.AddTextBox(turtlex - 50, Turtley + 70)
+  Controls.SetSize(distancetxt, 40, 30)   
+  firebutton = Controls.AddButton("Hit", turtlex + 20, Turtley + 70)  
+  Controls.SetSize(firebutton, 80, 30)    
+Endsub
+
+Sub hitClick
+  angle = Math.Round(Controls.GetTextBoxText(angletxt))
+  distance = Math.Round(Controls.GetTextBoxText(distancetxt))
+  clicked = Controls.GetButtonCaption(Controls.LastClickedButton)  
+  If clicked = "Hit" Then
+    GraphicsWindow.PenWidth = 0
+    Turtle.Angle = angle
+    Turtle.PenDown()
+    GraphicsWindow.BrushColor = "Black"
+    Turtle.Move(distance)
+    If Turtle.x > x and Turtle.x < x + 144 and Turtle.y > y and Turtle.y < y + 130 Then
+      Shapes.HideShape(target)
+      score = score + 10   
+      scoreshow()
+      Program.Delay(500)
+      If target = score Then
+        GameEnd()
+      EndIf 
+      Controls.SetTextBoxText(angletxt, "")
+      Controls.SetTextBoxText(distancetxt, "")
+      MovingShape()
+    Else
+      Program.Delay(1000)
+      If life > 1 Then
+        GraphicsWindow.ShowMessage("Click Ok to continue the game","Reset")
+        clicked = "Reset"
+      Else      
+        GameEnd()
+      EndIf    
+    EndIf         
+  EndIf
+  
+  If clicked = "Reset" Then    
+    life = life - 1
+    If score >= 10 Then
+      score = score - 5
+    EndIf    
+    scoreshow()
+    Controls.SetTextBoxText(angletxt, "")
+    Controls.SetTextBoxText(distancetxt, "")
+    MovingShape()   
+    If life < 1 Then
+      GameEnd()
+    EndIf    
+  EndIf
+EndSub
+
+Sub MovingShape
+  Shapes.ShowShape(target)
+  Turtle.x = turtlex
+  Turtle.Y = turtley
+  Turtle.Angle = 0
+  x = Math.GetRandomNumber(450)
+  y = Math.GetRandomNumber(80)
+  If x <= 40 Then
+    x = 40
+    Shapes.Animate(target, x, y, 1000)
+  ElseIf y <= 20 Then
+    y = 20
+    Shapes.Animate(target, x, y, 1000)
+  Else  
+    Shapes.Animate(target, x, y, 1000)
+  EndIf
+EndSub
+
+Sub GameEnd
+  GraphicsWindow.ShowMessage("Your score is: " + score, "Game Over")  
+  Program.End()
+EndSub
+
+Sub ScoreShow
+  GraphicsWindow.FontSize = 14
+  GraphicsWindow.BrushColor = "Gray"
+  GraphicsWindow.FillRectangle(ScoreboxX + 50, ScoreboxX - 65, 135, 70) 
+  GraphicsWindow.BrushColor = "White"
+  GraphicsWindow.DrawText(ScoreboxX + 60, ScoreboxX - 55, "Score :")
+  GraphicsWindow.DrawText(ScoreboxX + 110, ScoreboxX - 55, score)
+  GraphicsWindow.DrawText(ScoreboxX + 60, ScoreboxX - 20, "Life :")
+  GraphicsWindow.DrawText(ScoreboxX + 110, ScoreboxX - 20, life)    
+EndSub

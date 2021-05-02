@@ -1,0 +1,2 @@
+Scores = File.ReadLine("P:\High Scores.docx", 20)
+TextWindow.Write(Scores)

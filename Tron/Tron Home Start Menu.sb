@@ -1,0 +1,215 @@
+'Tron game
+
+Init()
+StartMenu()
+Controls.ButtonClicked = Start_Game
+If Play_Game = "False" Then
+  While Play_Game = "False"
+    Program.Delay(10)
+  EndWhile
+EndIf
+
+While Array.GetValue("Grid", Computer_X + ", " + (Computer_Y - 10)) <> "Poop"
+Play()
+EndWhile
+  TextWindow.WriteLine("Done")
+
+
+
+Sub Init 
+  
+  'Variable reset
+  Play_Game = "False"
+  Score_Comp = 0
+  Score_Player = 0
+  Last_Input = "None"
+  Direction = "Left"
+  Move_No = 0
+  Player_X = 800
+  Player_Y = 375
+  Computer_X = 200
+  Computer_Y = 375
+  GW_Height = 745
+  GW_Width = 1000
+  
+  'Graphics window config
+  GraphicsWindow.BackgroundColor = "Black"
+   GraphicsWindow.Width = GW_Width
+  GraphicsWindow.Height = GW_Height  
+  GraphicsWindow.Top = 150
+  GraphicsWindow.Left = 450
+  GraphicsWindow.Title = "Tron Game"
+  GraphicsWindow.CanResize = "False"
+  
+  'Outer Wall
+  GraphicsWindow.PenWidth = 10
+  GraphicsWindow.PenColor = "PaleTurquoise"
+  GraphicsWindow.DrawRectangle(5, 40,  GW_Width, GW_Height - 35)
+  
+  ' Score
+  GraphicsWindow.BrushColor = "Yellow"
+  GraphicsWindow.FontSize = 20
+  cScore_Display = Shapes.AddText("Computer : " + Score_Comp)
+  Shapes.Move(cScore_Display, 10, 5)
+  GraphicsWindow.BrushColor = "Cyan"
+  pScore_Display = Shapes.AddText("You : " + Score_Player)
+  Shapes.Move(pScore_Display, GW_Width - 90, 5)
+  
+  'Draw grid
+  GraphicsWindow.PenColor = "DimGray"
+  GraphicsWindow.PenWidth = 1/6
+  For t = 45 To GW_Height - 10 Step 10
+   For i = 10 To GW_Width - 10 Step 10
+     GraphicsWindow.DrawRectangle(i, t, 10, 10)
+     Array.SetValue("Grid", i + ", " + t, "Empty")
+    EndFor   
+  EndFor
+  
+  'Set Player Location
+  GraphicsWindow.BrushColor = "Cyan"
+  GraphicsWindow.FillRectangle(800, 375, 10, 10)
+  Array.SetValue("Grid", "800, 375", "Wall")
+  'Set Computer's location
+  GraphicsWindow.BrushColor = "Yellow"
+  GraphicsWindow.FillRectangle(200, 375, 10, 10)
+  Array.SetValue("Grid", "200, 375", "Wall")
+EndSub
+
+Sub StartMenu
+  GraphicsWindow.BrushColor = "Black"
+  Title_Background = Shapes.AddRectangle(GW_Width + 100, GW_Height + 100)
+  
+  Start_Game_Button = Controls.AddButton("Start Game", GW_Width/2 - 50, GW_Height/2)
+  High_Scores_Button = Controls.AddButton("High Scores", GW_Width/2 - 50, GW_Height/2 + 50)
+  How_to_Play_Button = Controls.AddButton("How to Play", GW_Width/2 - 50, GW_Height/2 + 100)
+  Code_Listing_Button =  Controls.AddButton("View Code Listing", GW_Width - 200, GW_Height-40)
+EndSub
+
+Sub Start_Game
+  If Controls.LastClickedButton = Start_Game_Button Then
+    Play_Game = "True"
+    Shapes.HideShape(Title_Background)
+    Controls.HideControl(Start_Game_Button)
+    Controls.HideControl(High_Scores_Button)
+    Controls.HideControl(How_to_Play_Button)
+    Controls.HideControl(Code_Listing_Button)
+  EndIf
+EndSub
+
+Sub Play
+  
+  'Get Player's Input
+  Key = GraphicsWindow.LastKey
+  If (Key = "Up" Or Key = "Down" Or Key = "Left" Or Key = "Right") Then
+    Direction = Key 
+  EndIf
+  
+  'Move Player
+  Move_No = Move_No + 1
+  If (Direction = "Up") Then
+    If (Last_Input <> "Down") Then
+       GraphicsWindow.BrushColor = "Cyan"
+       Player_Y = Player_Y - 10
+       Crash_Detect()
+       GraphicsWindow.FillRectangle(Player_X, Player_Y, 10, 10)
+       Array.SetValue("Grid", Player_X + ", " + Player_Y, "Wall")
+       Last_Input = "Up"
+     Else 
+       Player_Y = Player_Y + 10
+       GraphicsWindow.FillRectangle(Player_X, Player_Y, 10, 10)
+       Crash_Detect()
+       Array.SetValue("Grid", Player_X + ", " + Player_Y, "Wall")
+    EndIf
+  ElseIf (Direction = "Down") Then
+      If (Last_Input <> "Up") Then
+        GraphicsWindow.BrushColor = "Cyan"
+        Player_Y = Player_Y + 10
+        Crash_Detect()
+        GraphicsWindow.FillRectangle(Player_X, Player_Y, 10, 10)
+        Array.SetValue("Grid", Player_X + ", " + Player_Y, "Wall")
+        Last_Input = "Down"
+      Else
+        Player_Y = Player_Y - 10
+        Crash_Detect()
+       GraphicsWindow.FillRectangle(Player_X, Player_Y, 10, 10)
+       Array.SetValue("Grid", Player_X + ", " + Player_Y, "Wall")
+     EndIf
+   ElseIf (Direction = "Right") Then
+     If (Last_Input <> "Left") Then
+        GraphicsWindow.BrushColor = "Cyan"
+        Player_X = Player_X + 10
+        Crash_Detect()
+        GraphicsWindow.FillRectangle(Player_X, Player_Y, 10, 10)
+        Array.SetValue("Grid", Player_X + ", " + Player_Y, "Wall")
+        Last_Input = "Right"
+      Else
+        Player_X = Player_X - 10
+        Crash_Detect()
+       GraphicsWindow.FillRectangle(Player_X, Player_Y, 10, 10)
+       Array.SetValue("Grid", Player_X + ", " + Player_Y, "Wall")
+     EndIf
+    ElseIf (Direction = "Left") Then
+     If (Last_Input <> "Right") Then
+        GraphicsWindow.BrushColor = "Cyan"
+        Player_X = Player_X - 10
+        Crash_Detect()
+        GraphicsWindow.FillRectangle(Player_X, Player_Y, 10, 10)
+        Array.SetValue("Grid", Player_X + ", " + Player_Y, "Wall")
+        Last_Input = "Left"
+      Else
+        Player_X = Player_X + 10
+        Crash_Detect()
+       GraphicsWindow.FillRectangle(Player_X, Player_Y, 10, 10)
+       Array.SetValue("Grid", Player_X + ", " + Player_Y, "Wall")
+     EndIf
+   EndIf     
+   
+   
+   'Move Computer   
+   Up_Free = Array.GetValue("Grid", Computer_X + ", " + (Computer_Y - 10))
+   Down_Free = Array.GetValue("Grid", Computer_X + ", " + (Computer_Y + 10)) 
+   Left_Free = Array.GetValue("Grid", (Computer_X - 10) + ", " + Computer_Y)
+   Right_Free = Array.GetValue("Grid", (Computer_X + 10) + ", " + Computer_Y)
+   If Up_Free <> "Empty" Then
+     Up_Free = "False"
+   Else
+     Up_Free = "True"     
+   EndIf
+   If Down_Free <> "Empty" Then
+     Down_Free = "False"
+   Else
+     Down_Free = "True"     
+   EndIf 
+   If Left_Free <> "Empty" Then
+     Left_Free = "False"
+   Else
+     Left_Free = "True"     
+   EndIf
+   If Right_Free <> "Empty" Then
+     Right_Free = "False"
+   Else
+     Right_Free = "True"     
+   EndIf
+  
+    If Up_Free = "True" Then
+     GraphicsWindow.BrushColor = "Yellow"
+     Computer_Y = Computer_Y - 10
+     GraphicsWindow.FillRectangle(Computer_X, Computer_Y, 10, 10)
+     Array.SetValue("Grid", Computer_X + ", " + Computer_Y, "Wall")     
+   Else
+     GraphicsWindow.BrushColor = "Yellow"
+     Computer_X = Computer_X + 10
+     GraphicsWindow.FillRectangle(Computer_X, Computer_Y, 10, 10)
+     Array.SetValue("Grid", Computer_X + ", " + Computer_Y, "Wall")     
+   EndIf        
+  Program.Delay(50)
+EndSub
+
+Sub Crash_Detect
+  If Array.GetValue("Grid", Player_X + ", " + Player_Y) <> "Empty" Then
+    Game_Over()
+  EndIf 
+EndSub
+Sub Game_Over
+  Program.End()
+EndSub 

@@ -1,0 +1,98 @@
+Init()
+
+Sub Init
+GraphicsWindow.BackgroundColor = "Black"
+GraphicsWindow.PenColor = "White"
+GraphicsWindow.Width = 500
+GraphicsWindow.Height = 500
+GraphicsWindow.PenWidth = 30
+GraphicsWindow.DrawLine(170,20, 170, 480)
+GraphicsWindow.DrawLine(330,20, 330, 480)
+GraphicsWindow.DrawLine(20, 170, 480, 170)
+GraphicsWindow.DrawLine(20, 330, 480, 330)
+Turn = "1"
+Array.SetValue("Played", "TL", "None")
+Array.SetValue("Played", "TC", "None")
+Array.SetValue("Played", "TR", "None")
+Array.SetValue("Played", "CL", "None")
+Array.SetValue("Played", "CC", "None")
+Array.SetValue("Played", "CR", "None")
+Array.SetValue("Played", "BL", "None")
+Array.SetValue("Played", "BC", "None")
+Array.SetValue("Played", "BR", "None")
+EndSub
+
+GraphicsWindow.MouseMove = Square_Select
+GraphicsWindow.MouseUp = Place_Cross
+
+
+Sub Square_Select
+Square_Choice_X = GraphicsWindow.MouseX 
+Square_Choice_Y = GraphicsWindow.MouseY
+
+If Square_Choice_X < 170 And Square_Choice_Y < 170 Then
+  Square = "TL"
+ElseIf Square_Choice_X < 330 And Square_Choice_Y < 170 Then
+  Square = "TC"
+ElseIf Square_Choice_X > 330 And Square_Choice_Y < 160 Then
+  Square = "TR"
+ElseIf Square_Choice_X < 170 And Square_Choice_Y < 330 Then
+  Square = "CL"
+ElseIf Square_Choice_X < 330 And Square_Choice_Y < 330 Then
+  Square = "CC"
+ElseIf Square_Choice_X > 330 And Square_Choice_Y < 330 Then
+  Square = "CR"
+ElseIf Square_Choice_X < 170 And Square_Choice_Y > 330 Then
+  Square = "BL"
+ElseIf Square_Choice_X < 330 And Square_Choice_Y > 330 Then
+  Square = "BC"  
+ElseIf Square_Choice_X > 330 And Square_Choice_Y > 330 Then
+  Square = "BR" 
+Else
+ Square = "Line" 
+EndIf
+TextWindow.WriteLine(Square)
+TextWindow.WriteLine(Array.GetValue("Played", Square))
+Program.Delay(100)
+EndSub
+
+Sub Place_Cross
+If Array.GetValue("Played", Square) = "None" Then
+  If Text.StartsWith(Square, "T") Then
+    Draw_Place_y = 40
+  ElseIf Text.StartsWith(Square, "C")Then
+    Draw_Place_y = 210
+  ElseIf Text.StartsWith(Square, "B")Then
+    Draw_Place_y = 370
+  EndIf
+  If Text.EndsWith(Square, "L")Then
+    Draw_Place_X = 60
+  ElseIf Text.EndsWith(Square, "C")Then
+    Draw_Place_X = 220
+  ElseIf Text.EndsWith(Square, "R")Then
+    Draw_Place_X = 390
+  EndIf
+
+If Turn = 1 Then
+  GraphicsWindow.DrawLine(Draw_Place_X, Draw_Place_y, Draw_Place_X + 50, Draw_Place_y + 75)
+  GraphicsWindow.DrawLine( Draw_Place_X + 50, Draw_Place_y,Draw_Place_X, Draw_Place_y + 75)
+  Turn = 2
+ElseIf Turn = 2 Then
+  GraphicsWindow.DrawEllipse(Draw_Place_X, Draw_Place_y, 50, 75)
+  Turn = 1
+EndIf
+  Array.SetValue("Played", Square, Turn)
+EndIf
+Check_Win()
+EndSub
+
+Sub Check_Win
+  If Array.GetValue("Played", "TL") = Turn And Array.GetValue("Played", "TC") = Turn And Array.GetValue("Played", "TR") = Turn Then
+    GraphicsWindow.PenWidth = 10
+    GraphicsWindow.DrawLine( 20, 75, 480, 75)
+  ElseIf Array.GetValue("Played", "CL") = Turn And Array.GetValue("Played", "CC") = Turn And Array.GetValue("Played", "CR") = Turn Then
+    GraphicsWindow.PenWidth = 10
+    GraphicsWindow.DrawLine( 20, 250, 480, 250)  
+  EndIf
+  
+EndSub

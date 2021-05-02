@@ -1,0 +1,174 @@
+Initialize()
+While (GameState<>"End")
+  DoGameLoop()
+EndWhile
+Program.End()
+
+Sub Initialize
+  'Initialize Variables
+  Score = 0
+  Direction = 0
+  GameState = "GameOver"
+
+  'Initialize the GraphicsWindow
+  GraphicsWindow.Show()
+  UpdateScore()
+  GraphicsWindow.Height = 480
+  GraphicsWindow.Width = 640
+  GraphicsWindow.BackgroundColor = "Black"
+
+  GraphicsWindow.BrushColor = "LightCyan"
+  GraphicsWindow.FontSize=30
+  GraphicsWindow.DrawText(220, 450, "TRON-SECTOR")
+
+  ' When user presses keyboard, it will call the function we made called OnKeyDown below
+  GraphicsWindow.KeyDown = OnKeyDown
+
+  'Initialize Blocks
+  GraphicsWindow.PenWidth = 0
+  GraphicsWindow.BrushColor = "LimeGreen"
+  For Index=0 To 29
+    Temp = Shapes.AddRectangle(16,16)
+    Shapes.Move(Temp,0,Index*16)
+    Array.SetValue("Blocks",Index,Temp)
+    Array.SetValue("BlockPositions",Index,0)
+  EndFor
+
+  'Initialize Walls
+  GraphicsWindow.PenWidth = 0
+  GraphicsWindow.BrushColor = "PaleTurquoise"
+  Temp = Shapes.AddRectangle(16,480)
+  Shapes.Move(Temp,624,0)
+  Shapes.AddRectangle(16,480)
+
+  'Initialize Tail
+  GraphicsWindow.PenWidth = 0
+  GraphicsWindow.BrushColor = "RoyalBlue"
+  For Index = 0 To 4
+    Temp = Shapes.AddRectangle(16,16)
+    Shapes.Move(Temp,320,Index*16)
+    Array.SetValue("Tail",Index,Temp)
+    Array.SetValue("TailPositions",Index,20)
+  EndFor
+
+  'Initialize Head
+  GraphicsWindow.PenWidth = 0
+  GraphicsWindow.BrushColor = "DeepSkyBlue"
+  Temp = Shapes.AddRectangle(16,16)
+  Shapes.Move(Temp,320,5*16)
+  Array.SetValue("Tail",5,Temp)
+  Array.SetValue("TailPositions",5,20)
+
+EndSub
+
+Sub UpdateScore
+  GraphicsWindow.Title = "Score: " + Score
+EndSub
+
+' This gets run when we press the keys on the keyboard
+Sub OnKeyDown
+  Temp = GraphicsWindow.LastKey
+  If (GameState = "GameOver") Then
+    If (GraphicsWindow.LastKey = "Space") Then
+      StartGame()
+    Else
+      If (GraphicsWindow.LastKey = "Escape") Then
+        GameState = "End"
+      EndIf
+    Endif
+  Else
+    If (GraphicsWindow.LastKey = "Left") Then
+      Direction = -1
+    Else
+      If (GraphicsWindow.LastKey = "Right") Then
+        Direction = 1
+      EndIf
+    EndIf
+
+  EndIf
+EndSub
+
+' This gets called when we press the space bar
+Sub StartGame
+
+  Score = 0
+  GameSpeed = 0
+
+  ' what direction are we going to move (1 = right, -1 = left)
+  Direction = 1
+
+  ' this will draw the score
+  UpdateScore()
+
+  ' Draw the blocks 
+  For Index=0 To 29
+    Temp = Array.GetValue("Blocks",Index)
+    Shapes.Move(Temp,0,Index*16)
+    Array.SetValue("BlockPositions",Index,0)
+  EndFor
+
+  ' Draw our tail & head
+  For Index=0 To 5
+    Temp = Array.GetValue("Tail",Index)
+    Shapes.Move(Temp,20*16,Index*16)
+    Array.SetValue("TailPositions",Index,20)
+  EndFor
+  GameState = "Play"
+EndSub
+
+' This keeps getting called to update the game display
+Sub DoGameLoop
+  If (GameState = "Play") Then
+
+    ' Increase score 
+    Score = Score + 1
+    UpdateScore()
+
+    ' Set the vertical position variable of the blocks up to the vertical position of the block above it
+    For Index=0 To 28
+      Temp = Array.GetValue("BlockPositions",Index+1)
+      Array.SetValue("BlockPositions",Index,Temp)
+    EndFor
+
+    ' Add a new block
+    Array.SetValue("BlockPositions",29,Math.GetRandomNumber(38)+1)
+
+    ' Move all the blocks graphically
+    For Index=0 To 29
+      Temp = Array.GetValue("Blocks",Index)
+      Shapes.Move(Temp,Array.GetValue("BlockPositions",Index)*16,Index*16)
+    endFor
+
+    ' Do tail
+    For Index=0 To 4
+      Temp = Array.GetValue("TailPositions",Index+1)
+      Array.SetValue("TailPositions",Index,Temp)
+    endFor
+
+    ' Do head
+    Array.SetValue("TailPositions",5,Array.GetValue("TailPositions",5)+Direction)
+
+    ' Draw tail/head
+    For Index=0 To 5
+      Temp = Array.GetValue("Tail",Index)
+      Shapes.Move(Temp,Array.GetValue("TailPositions",Index)*16,Index*16)
+    EndFor
+
+    ' Get where head is
+    Temp = Array.GetValue("TailPositions",5)
+
+    ' If head is at either left or right wall, or hit a block then deadski
+    If (Temp=0 Or Temp = 39 Or Temp = Array.GetValue("BlockPositions",5)) Then
+      Sound.PlayChime()
+      GameState = "GameOver"
+    EndIf
+
+    ' wait x milliseconds before leaving this function, longer you play faster it gets
+    GameSpeed = 100 - Score/20
+    If GameSpeed < 10 Then
+      GameSpeed = 10
+    Endif
+    Program.Delay(GameSpeed)
+  EndIf
+EndSub
+

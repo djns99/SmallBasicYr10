@@ -1,0 +1,28 @@
+Init() 
+Start()
+
+Controls.ButtonClicked = Play
+
+Sub Init  
+  GraphicsWindow.BackgroundColor = "Black"
+  GraphicsWindow.Width = 500
+  GraphicsWindow.Height = 500 
+  GraphicsWindow.Top = 150
+  GraphicsWindow.Left = 450
+  GraphicsWindow.Title = "Tron Game"
+  GraphicsWindow.CanResize = "False"
+EndSub
+
+Sub Start
+  GraphicsWindow.BrushColor = "black"
+  Title_Background = Shapes.AddRectangle(600, 600)
+  
+  Start_Game_Button = Controls.AddButton("Start Game", 200, 200)
+  High_Scores_Button = Controls.AddButton("High Scores", 200, 250)
+  How_to_Play_Button = Controls.AddButton("How to Play", 200, 300)
+  Code_Listing_Button =  Controls.AddButton("View Code Listing", 385, 480)
+EndSub
+
+  
+
+

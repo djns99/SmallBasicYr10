@@ -1,0 +1,25 @@
+TextWindow.WriteLine("What is your name?")
+userName = TextWindow.Read()
+TextWindow.WriteLine("What is the diameter of the circle?")
+diameter = TextWindow.Read()
+radius = diameter / 2
+area = radius * radius * Math.Pi
+circumference = diameter * Math.Pi
+TextWindow.WriteLine("Hello " + userName + ", the radius of the circle is " + radius)
+TextWindow.WriteLine("Hello " + userName + ", the area of the circle is " + area)
+TextWindow.WriteLine("Hello " + userName + ", the radius of the circle is " + circumference)
+TextWindow.Write("What scale should I draw it too? X")
+scale = TextWindow.ReadNumber()
+
+GraphicsWindow.Left = 600
+GraphicsWindow.Top = 300
+GraphicsWindow.Width = 200
+GraphicsWindow.Height = 200
+
+For i = 1 To 3
+TextWindow.WriteLine("What colour should I draw it")
+colour = TextWindow.Read()
+GraphicsWindow.BrushColor = colour
+GraphicsWindow.DrawEllipse(100  - scale / 2, 100  - scale / 2, diameter * scale, diameter * scale)
+GraphicsWindow.FillEllipse(100  - scale / 2, 100  - scale / 2, diameter * scale, diameter * scale)
+EndFor

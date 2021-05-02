@@ -1,0 +1,81 @@
+  Score_Comp = 0
+  Score_Player = 0
+  Last_Input = "None"
+  Direction = "Left"
+  Direction_Comp = 1
+  Move_No = 0
+  Player_X = 800
+  Player_Y = 375
+  Computer_X = 200
+  Computer_Y = 375
+  GW_Height = 745
+  GW_Width = 1000
+  
+   For t = 45 To GW_Height - 10 Step 10
+   For i = 10 To GW_Width - 10 Step 10     
+     Array.SetValue("Grid", i + ", " + t, "Empty")
+    EndFor   
+  EndFor
+  Move_Computer()
+Sub Move_Computer
+  
+  dist[computer_X + ", " + computer_Y] = 0
+  prev[computer_X + ", " + computer_Y] = "undefined"
+  
+  For t = 45 to GW_Height - 10 Step 10
+    For i = 10 to GW_Height - 10 Step 10
+      If Array.GetValue("Grid", i + ", " + t) = "Empty" Or (Player_X = i And Player_Y = t)Then
+        dist[i + ", " + t] = "Infinity"
+        prev[i + ", " + t] = "undefined"
+      
+        map[i + ", " + t] = "unvisited"
+        TextWindow.WriteLine(map[i + ", " + t])
+        TextWindow.WriteLine(dist[i + ", " + t])
+        TextWindow.WriteLine(prev[i + ", " + t])
+      EndIf
+    EndFor
+  EndFor
+  
+  While Array.GetItemCount(map) > 0
+    For z = 0 To 10000 Step 1
+      While Array.ContainsValue(dist, z)
+        
+        For t = 45 to GW_Height - 10 Step 10
+          For i = 10 to GW_Height - 10 Step 10
+            If dist[i + ", " + t] = z And Array.ContainsIndex(map, i + ", " + t) Then
+              Array.RemoveValue(map, i + ", " + t)
+              For y = 1 To 4 Step 1
+                up = t -  10
+                right = i + 10
+                down = t + 10
+                left = i - 10
+                If y = 1 And Array.ContainsIndex(map, i + ", " + up) Then
+                  alt = dist[i + ", " + t] + 1
+                  If alt > dist[i + ", " + up] Then
+                    dist[i + ", " + up] = alt
+                    prev[i + ", " + up] = i + ", " + t
+                  EndIf
+                  
+                 ElseIf y = 2  Then       
+                  
+                 ElseIf y = 3 And Array.ContainsIndex(map, i + ", " + down) Then 
+                    alt = dist[i + ", " + t] + 1
+                    If alt > dist[i + ", " + down] Then
+                      dist[i + ", " + down] = alt
+                      prev[i + ", " + down] = i + ", " + t
+                   EndIf
+                  ElseIf y = 4 Then 
+                  EndIf
+                    
+                    TextWindow.WriteLine(dist[i + ", " + t])
+                    TextWindow.WriteLine(prev[i + ", " + t])
+              EndFor
+            EndIf
+          EndFor
+        EndFor     
+      EndWhile
+    EndFor      
+  EndWhile
+EndSub
+
+Math.F

@@ -1,0 +1,607 @@
+'Learn the importance of the value of perseverance as you follow the footsteps of Sir Edmund Hillary up Mt Everest.
+'Progressing through this game requires knowledge and logical thought as you complete riddles and learn about Sir Edmund Hillary's life.
+'This application is perfect for all ages with its easy to use User Interface, which allows users to make the most of the application.
+'The comprehensive settings menu allows the user to personalize their experience, enhancing game play.
+'The multi-choice option allows the user to make the questions easier should they struggle with the more complicated questions. 
+'The high quality animations allow for a smooth game play experience
+'/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+'Students often fail to understand the relevance of the RAPID values system.
+'This is an important issue that the brand new game "Riddle Mountain" endeavours to solve. 
+'It follows the life of Sir Edmund Hillary, showing students how the system can be implemented in everyday life.
+
+'This application combines high quality graphics, challenging scenarios and interactive game-play,
+'both to teach the user about these important values and to create a game-play experience that tests your logical thinking and general knowledge.
+'It's uncompromising attention to detail provides all users with a pleasant experience, with smooth animations, 
+'an easy-to-use Interface and a comprehensive settings menu for a enjoyable, personalized experience. 
+'This application combines advanced design philosophies and high end programming to provide the most amazing user experience possible. 
+'The game includes a useful multi-choice function for the more complicated questions making the game perfect for all ages and abilities. 
+'This application is the perfect way to teach students the value of the RAPID system in a fun, engaging way, far exceeding any of its competitors.
+'/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+'Runs initiation and declares events
+Init()
+Controls.ButtonClicked = Button_Clicked
+GraphicsWindow.KeyDown = Key_Pressed
+'///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+Sub Init
+  'Initiate Variables
+  Background_Path = Program.Directory + "\SkyBlueSky.jpg"
+  Mountain_Path = Program.Directory + "\Everest Route.png"
+  Sound_Path = Program.Directory + "\Speaker.png"
+  Marker_Path = Program.Directory + "\Marker.png"
+  Table_Path = Program.Directory + "\LogicPuzzle.png"
+  Sound_On = "True"
+  Menu = "False"
+  S_Menu = "False"
+  H_Menu = "False
+  Multichoice_On = "False"
+  TW_Title = "Initiating"
+  Level_No = 1
+  Temp_Level = 1
+  Continue_Questions = "True"
+  
+  'Initiate GW
+  GraphicsWindow.Width = 800
+  GraphicsWindow.Height = 790
+  GraphicsWindow.CanResize = "False"
+  GraphicsWindow.Title = "Riddle Mountain"
+  GraphicsWindow.Top = Desktop.Height / 2 - 400
+  GraphicsWindow.Left = Desktop.Width / 2 - 405
+  
+  'Draw Background Images
+  Background = Shapes.AddImage(Background_Path)
+  Shapes.Zoom(Background, 0.7, 0.7)
+  Shapes.Move(Background, -700, -300)
+  Mountain = Shapes.AddImage(Mountain_Path)
+  Shapes.Zoom(Mountain, 2, 2)
+  Shapes.Move(Mountain, 195, 165)
+  
+  'Add Sound Icon
+  Sound_Icon = Shapes.AddImage(Sound_Path)  
+  Shapes.Move(Sound_Icon, 420, 420)
+  Shapes.Zoom(Sound_Icon, 0.03, 0.03)
+  
+  'Add buttons
+  GraphicsWindow.BrushColor = "Black"
+  GraphicsWindow.FontSize = 20
+  Main_Menu_Button = Controls.AddButton("Main Menu", 680, 10)
+  
+  'Player
+  Player = Shapes.AddImage(Marker_Path)
+  Shapes.Move(Player, 285, 470)
+  Shapes.Zoom(Player, 0.08, 0.08)
+  Play_Game_Button = Controls.AddButton("Play Level", 10, 750)
+EndSub
+'?////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////;/
+Sub Text_Window
+  'Initiate TW
+  TextWindow.Title = TW_Title
+  TextWindow.BackgroundColor = "Black"
+  TextWindow.ForegroundColor = "White"
+  TextWindow.Left = Desktop.Width / 2 - 330
+  TextWindow.Top = Desktop.Height / 2 - 150
+  Write_Level()
+EndSub
+'//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Button_Clicked
+  'Checks Button Presses
+  If Controls.LastClickedButton = Main_Menu_Button Then
+    Controls.Remove(Main_Menu_Button)
+    Main_Menu_Window()
+  ElseIf  Controls.LastClickedButton = Quit_Game_Button Then
+    Program.End()
+  ElseIf  Controls.LastClickedButton = Continue_Button Then
+    Hide_Menu_Window()
+  ElseIf  Controls.LastClickedButton = Restart_Button Then
+    Restart()
+  ElseIf  Controls.LastClickedButton = Settings_Button Then
+    Hide_Menu_Window()
+    Settings()
+  ElseIf Controls.LastClickedButton = Settings_Exit Then
+    Hide_Settings_Window()
+    Main_Menu_Window()
+  ElseIf Controls.LastClickedButton = Play_Game_Button Then
+    TW_Title = "Level " + Level_No
+    Text_Window()
+  ElseIf Controls.LastClickedButton = Help_Button Then
+    Hide_Menu_Window()
+    Show_Help_Window()
+  ElseIf Controls.LastClickedButton = Help_Exit Then
+    Hide_Help_Window()
+    Main_Menu_Window()
+  EndIf
+EndSub
+'///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Key_Pressed
+  'Checks Key Press
+  If GraphicsWindow.LastKey = "S" Then
+    Toggle_Sound()
+  ElseIf GraphicsWindow.LastKey = "Escape" Then
+    If Menu = "True" Then
+      Hide_Menu_Window()
+    ElseIf S_Menu = "True" Then
+      Hide_Settings_Window()
+      Main_Menu_Window()
+    ElseIf H_Menu = "True" Then
+      Hide_Help_Window()
+      Main_Menu_Window()
+    Else
+      Program.End()
+    EndIf
+  ElseIf GraphicsWindow.LastKey = "M" Then
+    If Multichoice_On = "True" Then
+      Multichoice_On = "False"
+    Else
+      Multichoice_On = "True"
+    EndIf
+  ElseIf GraphicsWindow.LastKey = "F12" Then
+    Level_No = Level_No + 1
+    Animate()
+  EndIf
+EndSub
+'/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Main_Menu_Window
+  'Draws main menu
+  Menu = "True"
+  Controls.Remove(Main_Menu_Button)
+  GraphicsWindow.PenColor = "Black"
+  GraphicsWindow.BrushColor = "Black"
+  Main_Menu_Pop_Up = Shapes.AddRectangle(400, 400)
+  Shapes.SetOpacity(Main_Menu_Pop_Up, 70)
+  Shapes.Move(Main_Menu_Pop_Up, 200, 200)
+  GraphicsWindow.BrushColor = "Yellow"
+  GraphicsWindow.FontSize = 50 
+  Menu_Title = Shapes.AddText("Main Menu")
+  Shapes.Move(Menu_Title, 260, 200)
+  GraphicsWindow.FontSize = 20
+  GraphicsWindow.BrushColor = "Black"
+  'Main Menu Buttons  
+  Quit_Game_Button = Controls.AddButton("   Quit Game   ", 425, 540)
+  Settings_Button = Controls.AddButton("     Settings     ", 230, 540)
+  Continue_Button = Controls.AddButton("  Continue  ", 340, 300)
+  Restart_Button = Controls.AddButton("   Restart    ", 339, 350)
+  Help_Button = Controls.AddButton("     Help     ", 342, 400)
+EndSub
+'//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+Sub Hide_Menu_Window
+  'Remove main menu 
+  Menu = "False"
+  Main_Menu_Button = Controls.AddButton("Main Menu", 680, 10)
+  Shapes.Remove(Main_Menu_Pop_Up)
+  Shapes.Remove(Menu_Title)
+  Controls.Remove(Quit_Game_Button)
+  Controls.Remove(Settings_Button)
+  Controls.Remove(Continue_Button)
+  Controls.Remove(Restart_Button)
+  Controls.Remove(Help_Button)
+EndSub
+'///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Settings
+  'Popup and Title
+  S_Menu = "True"
+  Controls.Remove(Main_Menu_Button)
+  GraphicsWindow.PenColor = "Black"
+  GraphicsWindow.BrushColor = "Black"
+  Settings_Pop_Up = Shapes.AddRectangle(400, 400)
+  Shapes.SetOpacity(Settings_Pop_Up, 70)  
+  Shapes.Move(Settings_Pop_Up, 200, 200)  
+  GraphicsWindow.BrushColor = "Yellow"  
+  GraphicsWindow.FontSize = 50   
+  Settings_Title = Shapes.AddText("Settings")  
+  Shapes.Move(Settings_Title, 285, 200)
+  GraphicsWindow.FontSize = 20
+  GraphicsWindow.BrushColor = "Black"  
+  Settings_Exit = Controls.AddButton("     Back     ", 450, 540)
+  'Settings Stuff...
+  'Sound
+  GraphicsWindow.BrushColor = "Yellow"  
+  GraphicsWindow.FontSize = 20    
+  Toggle_Sound_Text = Shapes.AddText("Toggle Sound:")
+  Shapes.Move(Toggle_Sound_Text, 260,300)
+  Toggle_Sound_Toggle = Shapes.AddText("'S'")
+  Shapes.Move(Toggle_Sound_Toggle, 480, 300)
+  'Multichoice
+  GraphicsWindow.BrushColor = "Yellow"  
+  GraphicsWindow.FontSize = 20    
+  Toggle_Multichoice_Text = Shapes.AddText("Toggle Multichoice:")
+  Shapes.Move(Toggle_Multichoice_Text, 260, 350)
+  Toggle_Multichoice_Toggle = Shapes.AddText("'M'")
+  Shapes.Move(Toggle_Multichoice_Toggle, 480, 350)
+  'Quit Game
+  GraphicsWindow.BrushColor = "Yellow"  
+  GraphicsWindow.FontSize = 20    
+  Quit_Text = Shapes.AddText("Exit Game:")
+  Shapes.Move(Quit_Text, 260, 400)
+  Quit_Game = Shapes.AddText("'Esc'")
+  Shapes.Move(Quit_Game, 480, 400)  
+EndSub
+'///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Hide_Settings_Window
+  'Hides the settings window
+  S_Menu = "False"
+  Shapes.Remove(Settings_Pop_Up)
+  Shapes.Remove(Settings_Title)
+  Shapes.Remove(Toggle_Sound_Text)
+  Shapes.Remove(Toggle_Sound_Toggle)
+  Shapes.Remove(Toggle_Multichoice_Text)
+  Shapes.Remove(Toggle_Multichoice_Toggle)
+  Shapes.Remove(Quit_Text)
+  Shapes.Remove(Quit_Game)
+  Controls.Remove(Settings_Exit)
+EndSub
+'/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Show_Help_Window
+  H_Menu = "True"
+  Controls.Remove(Main_Menu_Button)
+  GraphicsWindow.PenColor = "Black"
+  GraphicsWindow.BrushColor = "Black"
+  Help_Pop_Up = Shapes.AddRectangle(400, 400)
+  Shapes.SetOpacity(Help_Pop_Up, 70)  
+  Shapes.Move(Help_Pop_Up, 200, 200)  
+  GraphicsWindow.BrushColor = "Yellow"  
+  GraphicsWindow.FontSize = 50   
+  Help_Title = Shapes.AddText("Help")  
+  Shapes.Move(Help_Title, 350, 200)
+  GraphicsWindow.FontSize = 20
+  GraphicsWindow.BrushColor = "Black"  
+  Help_Exit = Controls.AddButton("     Back     ", 450, 540)
+  GraphicsWindow.FontSize = 15
+  GraphicsWindow.BrushColor = "Yellow"  
+  'Help Text
+  Help_Text[1] = Shapes.AddText(" The objective of the game is to progress")
+  Help_Text[2] = Shapes.AddText("to the top of the Mountain by answering")
+  Help_Text[3] = Shapes.AddText("questions and solving puzzles.")
+  Help_Text[5] = Shapes.AddText("The logic puzzles can be solved")
+  Help_Text[6] = Shapes.AddText("using a table system, which you")
+  Help_Text[7] = Shapes.AddText("can find out more about from:")
+  Help_Text[9] = Shapes.AddText("www.logic-puzzles.org")
+  Table_Image = Shapes.AddImage(Table_Path)
+  Shapes.Zoom(Table_Image, 0.5, 0.5)
+  Shapes.Move(Table_Image, 420, 300)
+  For i = 1 To 9 Step 1
+    Shapes.Move(Help_Text[i], 225, 250 + i * 20)
+  EndFor
+EndSub
+'////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Hide_Help_Window
+  H_Menu = "False"
+  Shapes.Remove(Help_Pop_Up)
+  Shapes.Remove(Help_Title)
+  Shapes.Remove(Table_Image)
+  Controls.Remove(Help_Exit)
+   For i = 1 To 9 Step 1
+    Shapes.Remove(Help_Text[i])
+  EndFor
+EndSub
+'///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Toggle_Sound
+  'Turns Sound on and of
+  If Sound_On = "True" Then
+    Sound_On = "False"
+    GraphicsWindow.PenColor = "Red"
+    GraphicsWindow.PenWidth = 10
+    Sound_Line = Shapes.AddLine(710,710,768,768)
+  Else
+    Shapes.Remove(Sound_Line)
+    Sound_On = "True"
+  EndIf
+EndSub
+'///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Write_Level
+  'Checks what level you are on and writes the question
+  'Level 1-----------------------------------------------------------------------------------------------------
+  If Level_No = 1 Then
+    TextWindow.WriteLine("Five boys named Tim, Ralph, Rory, Trent and Sam all play for the same soccer team. They each have different number on their shirts from 1-5. Using the following clues, determine which shirt Ralph wears:")
+    TextWindow.WriteLine(" ")
+    TextWindow.WriteLine("1. Tim's shirt number is higher than Ralph's")
+    TextWindow.WriteLine("2.Rory's Shirt Number is one less than Sam's")
+    TextWindow.WriteLine("3.The person who wears shirt number 4 has a name that starts with T")
+    TextWindow.WriteLine("4.Sam does not wear shirt number 3")
+    TextWindow.WriteLine("5. Tim's Shirt number is odd")
+    TextWindow.WriteLine(" ")
+    If Multichoice_On = "True" Then
+      TextWindow.WriteLine("1) His shirt number is 1")
+      TextWindow.WriteLine("2) His shirt number is 3")
+      TextWindow.WriteLine("(Write his shirt number)")
+      TextWindow.WriteLine(" ")
+    EndIf
+    Answer = TextWindow.ReadNumber()
+    While Answer <> 3 
+      TextWindow.WriteLine("Incorrect")
+      TextWindow.Write("Do you wish to continue (Y/N)  ")
+      Continue = TextWindow.Read()
+      If Continue <> "N" And Continue <> "n" Then
+        Answer = TextWindow.ReadNumber()
+      Else
+        Level_No = Level_No - 1
+        Answer = 3
+      EndIf
+    EndWhile
+    Level_No = Level_No + 1
+    TextWindow.Clear()
+    TextWindow.Hide()
+    Animate()
+   'Level 2 --------------------------------------------------------------------------------------------
+  ElseIf Level_No = 2 Then
+    Level_2[1]["Q"] = "During which year did Sir Edmund Hillary summit Mt.Everest"
+    Level_2[1]["A"] = 1953
+    Level_2[1]["M"][1] = 1946
+    Level_2[1]["M"][2] = 1949    
+    Level_2[1]["M"][3] = 1953
+    Level_2[1]["M"][4] = 1957 
+    Level_2[2]["Q"] = "How old was he when he died"
+    Level_2[2]["A"] = 88
+    Level_2[2]["M"][1] = 46
+    Level_2[2]["M"][2] = 67    
+    Level_2[2]["M"][3] = 88
+    Level_2[2]["M"][4] = 92
+    Level_2[3]["Q"] = "What year was he born"
+    Level_2[3]["A"] = 1919
+    Level_2[3]["M"][1] = 1915
+    Level_2[3]["M"][2] = 1919  
+    Level_2[3]["M"][3] = 1922
+    Level_2[3]["M"][4] = 1927 
+    Level_2[4]["Q"] = "How many children did he have"
+    Level_2[4]["A"] = 3
+    Level_2[4]["M"][1] = 0
+    Level_2[4]["M"][2] = 1    
+    Level_2[4]["M"][3] = 3
+    Level_2[4]["M"][4] = 4
+    Level_2[5]["Q"] = "What year was the first recorded attempt to climb Mt. Everest made"
+    Level_2[5]["A"] = 1922
+    Level_2[5]["M"][1] = 1914
+    Level_2[5]["M"][2] = 1922    
+    Level_2[5]["M"][3] = 1937
+    Level_2[5]["M"][4] = 1943 
+    For i = 1 To 5 Step 1
+      TextWindow.WriteLine(Level_2[i]["Q"])
+      TextWindow.WriteLine(" ")
+    If Multichoice_On = "True" Then
+      For x = 1 To 4 
+      TextWindow.WriteLine(x + ") " + Level_2[i]["M"][x])
+      EndFor
+    TextWindow.WriteLine(" ")    
+    EndIf
+      Answer = TextWindow.ReadNumber()
+      While Answer <> Level_2[i]["A"]
+        TextWindow.WriteLine("Incorrect")
+        TextWindow.Write("Do you wish to continue (Y/N)  ")
+        Continue = TextWindow.Read()
+      If Continue <> "N" And Continue <> "n" Then
+        Answer = TextWindow.ReadNumber()
+      Else
+        Level_No = Level_No - 1
+        i = 5
+        Answer = Level_2[i]["A"]
+        EndIf
+      EndWhile
+    EndFor
+    TextWindow.Clear()
+    Level_No = Level_No + 1
+    TextWindow.Hide()
+    Animate()
+  'Level 3 ------------------------------------------------------------------------------------------------
+  ElseIf Level_No = 3 Then
+    TextWindow.WriteLine("Four students in Mr Price's form class named  Melissa, Charles, Courtney, Jerry and Kate, each have different favourite subjects (Math, English, Science, History and French). Today they each have them for different periods. Using the clues below determine what is Kate's favourite subject")
+    TextWindow.WriteLine(" ")
+    TextWindow.WriteLine("1. Melissa's favourite subject is three periods after Science")
+    TextWindow.WriteLine("2. Jerry does not like Hisory or French")
+    TextWindow.WriteLine("3. Kate's favourite subject is directly after Courtney's")
+    TextWindow.WriteLine("4.One of the girls like English")
+    TextWindow.WriteLine("5. French is second period")
+    TextWindow.WriteLine("6. English is later in the day than Math")
+    TextWindow.WriteLine("7. Charles' favourite subject is later than Jerry's")
+    TextWindow.WriteLine("8. One of the boys like Math")
+    TextWindow.WriteLine(" ")
+    If Multichoice_On = "True" Then
+      TextWindow.WriteLine("1) Kate likes English")
+      TextWindow.WriteLine("2) Kate likes French")
+      TextWindow.WriteLine("(Write her favourite Subject)")
+      TextWindow.WriteLine(" ")
+    EndIf
+    Answer = TextWindow.Read()
+    If Answer = "french" Then
+      Answer = "French"
+    EndIf
+    While Answer <> "French"
+      TextWindow.WriteLine("Incorrect")
+      TextWindow.Write("Do you wish to continue (Y/N)  ")
+      Continue = TextWindow.Read()
+      If Continue <> "N" And Continue <> "n" Then
+        Answer = TextWindow.Read()
+        If Answer = "french" Then
+          Answer = "French"
+        EndIf
+      Else
+        Level_No = Level_No - 1
+        Answer = "French"
+      EndIf    
+    EndWhile
+    Level_No = Level_No + 1
+    TextWindow.Clear()
+    TextWindow.Hide()
+    Animate()
+  'Level 4 --------------------------------------------------------------------------------------------------------------
+  ElseIf Level_No = 4 Then    
+    Level_4[1]["Q"] = "For how many years did Sir Edmund Hillary lead the Himalayan Trust"
+    Level_4[1]["A"] = 48
+    Level_4[1]["M"][1] = 15
+    Level_4[1]["M"][2] = 37    
+    Level_4[1]["M"][3] = 48
+    Level_4[1]["M"][4] = 51 
+    Level_4[2]["Q"] = "Which note depicts Sir Edmund Hillary's face"
+    Level_4[2]["A"] = 5
+    Level_4[2]["M"][1] = 5
+    Level_4[2]["M"][2] = 10    
+    Level_4[2]["M"][3] = 20
+    Level_4[2]["M"][4] = 50
+    Level_4[3]["Q"] = "how Many Schools had the Himalayan trust built by 1990"
+    Level_4[3]["A"] = 5
+    Level_4[3]["M"][1] = 1
+    Level_4[3]["M"][2] = 5  
+    Level_4[3]["M"][3] = 7
+    Level_4[3]["M"][4] = 12
+    Level_4[4]["Q"] = "When Serving for the Millitary in Fiji and th Soloman Islands he was badly burnt, during which year did this happen"
+    Level_4[4]["A"] = 1945
+    Level_4[4]["M"][1] = 1940
+    Level_4[4]["M"][2] = 1943    
+    Level_4[4]["M"][3] = 1945
+    Level_4[4]["M"][4] = 1947
+    Level_4[5]["Q"] = "How many minutes did Sir Edmund Hillary Spend on top of Mt. Everest"
+    Level_4[5]["A"] = 15
+    Level_4[5]["M"][1] = 5
+    Level_4[5]["M"][2] = 15    
+    Level_4[5]["M"][3] = 25
+    Level_4[5]["M"][4] = 40
+    For i = 1 To 5 Step 1
+      TextWindow.WriteLine(Level_4[i]["Q"])
+      TextWindow.WriteLine(" ")
+    If Multichoice_On = "True" Then
+      For x = 1 To 4 
+      TextWindow.WriteLine(x + ") " + Level_4[i]["M"][x])
+    EndFor
+    TextWindow.WriteLine(" ")
+    EndIf
+      Answer = TextWindow.ReadNumber()
+      While Answer <> Level_4[i]["A"]
+        TextWindow.WriteLine("Incorrect")
+        TextWindow.Write("Do you wish to continue (Y/N)  ")
+        Continue = TextWindow.Read()
+      If Continue <> "N" And Continue <> "n" Then
+        Answer = TextWindow.ReadNumber()
+      Else
+        Level_No = Level_No - 1
+        i = 5
+        Answer = Level_4[i]["A"]
+        EndIf
+      EndWhile
+    EndFor
+    TextWindow.Clear()
+    Level_No = Level_No + 1
+    TextWindow.Hide()
+    Animate()
+  'Level 5 -------------------------------------------------------------------------------------------------------------
+  ElseIf Level_No = 5 Then
+    TextWindow.WriteLine("5 men called Carl, Greg, Trent, Garry and Bruce are at the gym. They are all different ages (25, 36, 41, 45 and 51 years old) and weigh different amounts (70, 78, 85, 92 and 97kg). They all compared the amount of pressups they can do in a minute, they had the following amounts; 30, 35, 40, 45 and 50 press-ups.Using the following clues determine how many press-ups the 51 year old could do.")
+    TextWindow.WriteLine(" ")
+    TextWindow.WriteLine("1. The 36 year old weighs less than 80kg")
+    TextWindow.WriteLine("2. Greg can do the most press-ups")
+    TextWindow.WriteLine("3. Both Trent and Bruce are over 40 years old")
+    TextWindow.WriteLine("4. Greg weighs more than Trent but less than Bruce")
+    TextWindow.WriteLine("5. The 92Kg person can do 45 Press-ups")
+    TextWindow.WriteLine("6. The 41 year old weighs 85Kg")
+    TextWindow.WriteLine("7. Only one person aged over 40 is over 90Kg")
+    TextWindow.WriteLine("8. The 51 Year old weighs less than the 45 year old")
+    TextWindow.WriteLine("9. The 45 year old can do 35 press-ups")
+    TextWindow.WriteLine("10. Trent weighs 78Kg")
+    TextWindow.WriteLine("11. Garry is the youngest")
+    TextWindow.WriteLine("12. Garry can do more press-ups than the 51 year old")
+    TextWindow.WriteLine("13. Carl does not do the least press-ups")
+    TextWindow.WriteLine(" ")
+    If Multichoice_On = "True" Then
+      TextWindow.WriteLine("1) He does 40 press-ups")
+      TextWindow.WriteLine("2) He does 30 press-ups")
+      TextWindow.WriteLine("(Write how many he does)")
+      TextWindow.WriteLine(" ")
+    EndIf
+    Answer = TextWindow.ReadNumber()
+    While Answer <> 30  
+      TextWindow.WriteLine("Incorrect")
+      TextWindow.Write("Do you wish to continue (Y/N)  ")
+      Continue = TextWindow.Read()
+      If Continue <> "N" And Continue <> "n" Then
+        Answer = TextWindow.ReadNumber()
+      Else
+        Level_No = Level_No - 1
+        Answer = 30
+      EndIf    
+    EndWhile
+    Level_No = Level_No + 1
+    TextWindow.Clear()
+    TextWindow.Hide()
+    Animate() 
+  ElseIf Level_No = 6 Then
+    TextWindow.Hide()
+    You_Win()
+  EndIf 
+EndSub
+'////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Animate
+  'Animates character between levels
+  'Checks that the level has changed
+  If Temp_Level <> Level_No Then
+    If Sound_On = "True" And Level_No > 1 Then
+      Sound.PlayChime()
+    EndIf
+    Temp_Level = Level_No
+    'Checks the level and moves to the corresponding location
+    If Level_No = 1 Then
+        Shapes.Move(Player, 285, 470)      
+    ElseIf Level_No = 2 Then
+      For i = 1 To 70 Step 0.1
+        If Level_No = 2 Then
+         Shapes.Move(Player, 285 + i, 470 - i * 1.2)
+         Program.Delay(1)
+       EndIf
+     EndFor
+     For i = 1 To 110 Step 0.2
+       If Level_No = 2 Then
+         Shapes.Move(Player, 355 - i * 0.2, 386 - i)
+         Program.Delay(1)
+       EndIf
+     EndFor
+       Shapes.Animate(Player, 420, 130, 1000)
+     ElseIf Level_No = 3 Then
+       If Shapes.GetLeft(Player) = 420 Then
+         Shapes.Animate(Player, 210, 35, 800)
+       Else
+         Shapes.Move(Player, 420, 130)
+         Shapes.Animate(Player, 210, 35, 800)
+       EndIf
+    ElseIf Level_No = 4 Then
+      If Shapes.GetLeft(Player) = 210 Then
+        Shapes.Animate(Player, 135, -150, 800)
+      Else
+        Shapes.Move(Player, 210, 35)
+        Shapes.Animate(Player, 135, -150, 800)
+      EndIf
+    ElseIf Level_No = 5 Then
+      If Shapes.GetLeft(Player) = 135 Then
+        Shapes.Animate(Player, -45, -195, 500)
+      Else
+        Shapes.Move(Player, 135, -150)
+        Shapes.Animate(Player, -45, -195, 500)
+      EndIf
+    ElseIf Level_No = 6 Then
+      If Shapes.GetLeft(Player) = -45 Then
+        Shapes.Animate(Player, -175, -320, 800)
+      Else
+        Shapes.Move(Player, -45, -195)
+        Shapes.Animate(Player, -175, -320, 800)
+      EndIf
+      You_Win()
+    EndIf    
+  EndIf
+EndSub
+'///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub You_Win
+  Controls.HideControl(Play_Game_Button)
+  Controls.HideControl(Main_Menu_Button)
+  GraphicsWindow.BrushColor = "Yellow"
+  GraphicsWindow.FontSize = 90
+  You_Win_Text = Shapes.AddText("'Congratulations'")
+  Shapes.Move(You_Win_Text, 20, 300)
+  GraphicsWindow.BrushColor = "Black"
+  GraphicsWindow.FontSize = 20
+  Restart_Button = Controls.AddButton("Restart", 350, 450)
+EndSub
+'//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Sub Restart
+  'Restarts Game
+  Controls.ShowControl(Play_Game_Button)
+  Shapes.Remove(You_Win_Text)
+  Level_No = 1
+  Animate()
+  Hide_Menu_Window()
+EndSub
+'//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
